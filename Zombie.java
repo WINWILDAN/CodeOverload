@@ -42,7 +42,7 @@ public class Zombie {
 
     public void draw(Graphics g) {
         // Draw the current frame at the zombie's position
-        g.drawImage(walkingFrames[currentFrame], (int) x, (int) y, 40,  48, null);
+        g.drawImage(walkingFrames[currentFrame], (int) x, (int) y, 20,  24, null);
     }
 
     public void takeDamage(int damage) {

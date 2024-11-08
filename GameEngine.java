@@ -121,9 +121,25 @@ public class GameEngine extends JFrame {
         while (it.hasNext()) {
             Bullet bullet = it.next();
             bullet.move();
-            if (bullet.getX() < 0 || bullet.getX() > getWidth() || bullet.getY() < 0 || bullet.getY() > getHeight() ||
-                map.getWalls().stream().anyMatch(wall -> wall.intersects(new Rectangle(bullet.getX(), bullet.getY(), 4, 4)))) {
-                it.remove();
+    
+            // ตรวจสอบว่ากระสุนหลุดออกจากขอบหน้าจอหรือไม่
+            if (bullet.getX() < 0 || bullet.getX() > getWidth() || bullet.getY() < 0 || bullet.getY() > getHeight()) {
+                it.remove(); // ลบกระสุนหากหลุดขอบ
+                continue;
+            }
+    
+            // ตรวจสอบการชนของกระสุนกับกำแพง
+            Rectangle bulletBounds = new Rectangle(bullet.getX(), bullet.getY(), 4, 4);
+            boolean hitWall = false;
+            for (Rectangle wall : map.getWalls()) {
+                if (bulletBounds.intersects(wall)) {
+                    hitWall = true;
+                    break;
+                }
+            }
+    
+            if (hitWall) {
+                it.remove(); // ลบกระสุนเมื่อชนกำแพง
             }
         }
     }
@@ -135,29 +151,27 @@ public class GameEngine extends JFrame {
 
     private void checkCollision() {
         if (isGameOver || isVictory) return;
-
-        bullets.removeIf(bullet -> zombies.stream().anyMatch(zombie -> {
-            if (Math.abs(bullet.getX() - zombie.getX()) < 20 && Math.abs(bullet.getY() - zombie.getY()) < 20) {
-                zombie.takeDamage(10);
-                if (zombie.isDead()) {
-                    zombies.remove(zombie);
-                    score += 10;
-                }
-                return true;
-            }
-            return false;
-        }));
-
-        zombies.forEach(zombie -> {
-            if (Math.abs(player.getX() - zombie.getX()) < 20 && Math.abs(player.getY() - zombie.getY()) < 20) {
-                health -= 5;
-                if (health <= 0) {
-                    isGameOver = true;
-                    showEndGameScreen(false);
+    
+        Iterator<Bullet> bulletIterator = bullets.iterator();
+        while (bulletIterator.hasNext()) {
+            Bullet bullet = bulletIterator.next();
+            Iterator<Zombie> zombieIterator = zombies.iterator();
+            while (zombieIterator.hasNext()) {
+                Zombie zombie = zombieIterator.next();
+                // ตรวจสอบการชนของกระสุนกับซอมบี้
+                if (Math.abs(bullet.getX() - zombie.getX()) < 20 && Math.abs(bullet.getY() - zombie.getY()) < 20) {
+                    zombie.takeDamage(10); // ลดเลือดของซอมบี้
+                    bulletIterator.remove(); // ลบกระสุนเมื่อชน
+                    if (zombie.isDead()) {
+                        zombieIterator.remove(); // ลบซอมบี้เมื่อถูกฆ่า
+                        score += 10;
+                    }
+                    break; // ออกจากลูปเมื่อพบการชน เพื่อไม่ให้มีการตรวจซ้ำ
                 }
             }
-        });
-
+        }
+    
+        // ตรวจสอบว่าซอมบี้ทั้งหมดถูกกำจัดแล้วหรือไม่
         if (zombies.isEmpty() && !isGameOver) {
             isVictory = true;
             showEndGameScreen(true);
