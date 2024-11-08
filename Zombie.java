@@ -1,16 +1,20 @@
 import java.awt.*;
 public class Zombie {
-    private double x, y; // ตำแหน่งของซอมบี้
-    private int health; // พลังชีวิตซอมบี้
-    private double speed; // ความเร็วของซอมบี้
-    private Image zombieImage;
+    private double x, y; // Position of the zombie
+    private int health; // Health of the zombie
+    private double speed; // Speed of the zombie
+    private Image[] walkingFrames; // Array for animation frames
+    private int currentFrame = 0; // Current frame index for animation
+    private int animationDelay = 10; // Delay between frame updates (higher means slower animation)
+    private int frameCounter = 0; // Counter to keep track of animation timing
 
-    public Zombie(int x, int y, int health, double speed, Image zombieImage) {
+
+    public Zombie(int x, int y, int health, double speed, Image[] walkingFrames) {
         this.x = x;
         this.y = y;
         this.health = health;
         this.speed = speed;
-        this.zombieImage = zombieImage;
+        this.walkingFrames = walkingFrames;
     }
 
 
@@ -25,16 +29,20 @@ public class Zombie {
             x += (dx / distance) * speed; // ปรับตำแหน่ง X
             y += (dy / distance) * speed; // ปรับตำแหน่ง Y
         }
+        updateAnimation(); // Update the animation frame each time the zombie moves
+    }
+
+    private void updateAnimation() {
+        frameCounter++;
+        if (frameCounter >= animationDelay) {
+            currentFrame = (currentFrame + 1) % walkingFrames.length;
+            frameCounter = 0;
+        }
     }
 
     public void draw(Graphics g) {
-        // Draw the zombie image at the current position
-        if (zombieImage != null) {
-            g.drawImage(zombieImage, (int)x, (int)y, 36, 40, null);
-        } else {
-            g.setColor(Color.GREEN);
-            g.fillRect((int)x, (int)y, 32, 32); // ใช้สี่เหลี่ยมสีเขียวหากภาพไม่โหลด
-        }
+        // Draw the current frame at the zombie's position
+        g.drawImage(walkingFrames[currentFrame], (int) x, (int) y, 40,  48, null);
     }
 
     public void takeDamage(int damage) {

@@ -40,10 +40,10 @@ public class GameEngine extends JFrame {
 
         // โหลดภาพเฟรมสำหรับผู้เล่น
         Image[] walkingFrames = {
-            new ImageIcon("walk1.png").getImage().getScaledInstance(32, 40, Image.SCALE_SMOOTH),
-            new ImageIcon("walk2.png").getImage().getScaledInstance(32, 40, Image.SCALE_SMOOTH),
-            new ImageIcon("walk3.png").getImage().getScaledInstance(32, 40, Image.SCALE_SMOOTH),
-            new ImageIcon("walk4.png").getImage().getScaledInstance(32, 40, Image.SCALE_SMOOTH)
+            new ImageIcon("walk1.png").getImage().getScaledInstance(36, 45, Image.SCALE_SMOOTH),
+            new ImageIcon("walk2.png").getImage().getScaledInstance(36, 45, Image.SCALE_SMOOTH),
+            new ImageIcon("walk3.png").getImage().getScaledInstance(36, 45, Image.SCALE_SMOOTH),
+            new ImageIcon("walk4.png").getImage().getScaledInstance(36, 45, Image.SCALE_SMOOTH)
         };
 
         player = new Player(100, 120, walkingFrames);
@@ -122,16 +122,22 @@ public class GameEngine extends JFrame {
         int numberOfZombies = (level == 1) ? 5 : 8;
         int zombieHealth = 100;
         double zombieSpeed = (level == 1) ? 0.5 : 1.0;
-
+    
+        Image[] zombieFrames = {
+            new ImageIcon("zombie1.png").getImage().getScaledInstance(38, 45, Image.SCALE_SMOOTH),
+            new ImageIcon("zombie2.png").getImage().getScaledInstance(38, 45, Image.SCALE_SMOOTH),
+            new ImageIcon("zombie3.png").getImage().getScaledInstance(38, 45, Image.SCALE_SMOOTH),
+            new ImageIcon("zombie4.png").getImage().getScaledInstance(38, 45, Image.SCALE_SMOOTH)
+        };
+    
         for (int i = 0; i < numberOfZombies; i++) {
             int zombieX, zombieY;
             do {
                 zombieX = (int) (Math.random() * (getWidth() - 40));
                 zombieY = (int) (Math.random() * (getHeight() - 40));
             } while (checkCollisionWithWalls(zombieX, zombieY));
-
-            // Pass zombieImage when creating a new Zombie instance
-            zombies.add(new Zombie(zombieX, zombieY, zombieHealth, zombieSpeed, zombieImage));
+    
+            zombies.add(new Zombie(zombieX, zombieY, zombieHealth, zombieSpeed, zombieFrames));
         }
     }
 
