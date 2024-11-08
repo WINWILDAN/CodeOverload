@@ -16,7 +16,7 @@ public class GameEngine extends JFrame {
     private int timeRemaining;
     private Timer gameTimer;
     private Map map;
-    private int damagePerHit = 10; // จำนวนพลังชีวิตที่ลดเมื่อผู้เล่นชนกับซอมบี้
+    private int damagePerHit = 10; 
 
     public GameEngine(int level) {
         setTitle("Code Overload: Rise of the Undead - Level " + level);
@@ -110,8 +110,8 @@ public class GameEngine extends JFrame {
     }
 
     private void shootBullet(Point target) {
-        int playerCenterX = player.getX() + 10; // Half width (20/2)
-        int playerCenterY = player.getY() + 12; // Half height (24/2)
+        int playerCenterX = player.getX() + 10; 
+        int playerCenterY = player.getY() + 12; 
         int dx = target.x - playerCenterX, dy = target.y - playerCenterY;
         double length = Math.sqrt(dx * dx + dy * dy);
         bullets.add(new Bullet(playerCenterX, playerCenterY, (int)(dx / length * 4), (int)(dy / length * 4)));
@@ -123,13 +123,11 @@ public class GameEngine extends JFrame {
             Bullet bullet = it.next();
             bullet.move();
     
-            // ตรวจสอบว่ากระสุนหลุดออกจากขอบหน้าจอหรือไม่
             if (bullet.getX() < 0 || bullet.getX() > getWidth() || bullet.getY() < 0 || bullet.getY() > getHeight()) {
-                it.remove(); // ลบกระสุนหากหลุดขอบ
+                it.remove(); 
                 continue;
             }
     
-            // ตรวจสอบการชนของกระสุนกับกำแพง
             Rectangle bulletBounds = new Rectangle(bullet.getX(), bullet.getY(), 4, 4);
             boolean hitWall = false;
             for (Rectangle wall : map.getWalls()) {
@@ -140,7 +138,7 @@ public class GameEngine extends JFrame {
             }
     
             if (hitWall) {
-                it.remove(); // ลบกระสุนเมื่อชนกำแพง
+                it.remove(); 
             }
         }
     }
@@ -152,8 +150,6 @@ public class GameEngine extends JFrame {
 
     private void checkCollision() {
         if (isGameOver || isVictory) return;
-    
-        // ตรวจสอบการชนของกระสุนกับซอมบี้
         Iterator<Bullet> bulletIterator = bullets.iterator();
         while (bulletIterator.hasNext()) {
             Bullet bullet = bulletIterator.next();
@@ -172,18 +168,16 @@ public class GameEngine extends JFrame {
             }
         }
     
-        // ตรวจสอบการชนของผู้เล่นกับซอมบี้
         for (Zombie zombie : zombies) {
             if (Math.abs(player.getX() - zombie.getX()) < 20 && Math.abs(player.getY() - zombie.getY()) < 20) {
-                health -= damagePerHit; // ลดเลือดของผู้เล่น
+                health -= damagePerHit; 
                 if (health <= 0) {
                     isGameOver = true;
-                    showEndGameScreen(false); // แสดงหน้าจอ Game Over เมื่อสุขภาพหมด
+                    showEndGameScreen(false); 
                 }
             }
         }
     
-        // ตรวจสอบว่าซอมบี้ทั้งหมดถูกกำจัดแล้วหรือไม่
         if (zombies.isEmpty() && !isGameOver) {
             isVictory = true;
             showEndGameScreen(true);
