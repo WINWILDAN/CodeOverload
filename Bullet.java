@@ -2,7 +2,7 @@ import java.awt.*;
 
 public class Bullet {
     private int x, y;
-    private int dx, dy; // ทิศทางการเคลื่อนที่
+    private int dx, dy;
 
     public Bullet(int x, int y, int dx, int dy) {
         this.x = x;
@@ -18,9 +18,14 @@ public class Bullet {
 
     public void draw(Graphics g) {
         g.setColor(Color.YELLOW);
-        g.fillOval(x, y, 10, 10); // วาดกระสุนเป็นวงกลมเล็ก ๆ สีเหลือง
+        g.fillOval(x, y, 10, 10);
     }
 
-    public int getX() { return x; }
-    public int getY() { return y; }
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }
