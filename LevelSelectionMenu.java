@@ -1,56 +1,91 @@
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.*;
 
 public class LevelSelectionMenu extends JFrame {
+    private Image backgroundImage;
+
     public LevelSelectionMenu() {
         setTitle("Select Level");
-        setSize(1200, 1200); // ตั้งขนาดหน้าต่างเป็น 1200x1200
+        setSize(1200, 1200); // Set window size to 1200x1200
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(null); // ใช้ Layout แบบกำหนดตำแหน่งเอง
+        
+        // Load the background image
+        backgroundImage = new ImageIcon("selecBG.png").getImage();
 
-        // ปุ่มสำหรับเลือกเลเวล 1
-        JButton level1Button = new JButton("LEVEL 1");
-        level1Button.setFont(new Font("Arial", Font.PLAIN, 24));
-        level1Button.setBounds(500, 400, 200, 80); // กำหนดตำแหน่งและขนาดปุ่ม
+        // Create the custom panel with background image
+        JPanel backgroundPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // Draw the background image to fill the panel
+                g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+        backgroundPanel.setLayout(null); // Set layout to null for custom positioning
+
+        // Desired button sizes
+        int levelButtonWidth = 300; // Reduced from 400 by 25%
+        int levelButtonHeight = 120; // Reduced from 160 by 25%
+        int backButtonWidth = 150; // Original width (100) increased by 50%
+        int backButtonHeight = 60; // Original height (40) increased by 50%
+
+        // Load and resize button images
+        ImageIcon level1Icon = new ImageIcon(new ImageIcon("level1.png").getImage().getScaledInstance(levelButtonWidth, levelButtonHeight, Image.SCALE_SMOOTH));
+        ImageIcon level2Icon = new ImageIcon(new ImageIcon("level2.png").getImage().getScaledInstance(levelButtonWidth, levelButtonHeight, Image.SCALE_SMOOTH));
+        ImageIcon backIcon = new ImageIcon(new ImageIcon("back.png").getImage().getScaledInstance(backButtonWidth, backButtonHeight, Image.SCALE_SMOOTH));
+
+        // Button for Level 1
+        JButton level1Button = new JButton(level1Icon);
+        level1Button.setBounds(450, 375, levelButtonWidth, levelButtonHeight);
+        level1Button.setContentAreaFilled(false);
+        level1Button.setBorderPainted(false);
+        level1Button.setFocusPainted(false); // Prevent blue focus outline
         level1Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new GameEngine(1).setVisible(true); // เริ่มเกมที่เลเวล 1
-                dispose(); // ปิดหน้าจอเลือกเลเวล
+                new GameEngine(1).setVisible(true); // Start game at level 1
+                dispose(); // Close level selection screen
             }
         });
 
-        // ปุ่มสำหรับเลือกเลเวล 2
-        JButton level2Button = new JButton("LEVEL 2");
-        level2Button.setFont(new Font("Arial", Font.PLAIN, 24));
-        level2Button.setBounds(500, 500, 200, 80); // กำหนดตำแหน่งและขนาดปุ่ม
+        // Button for Level 2
+        JButton level2Button = new JButton(level2Icon);
+        level2Button.setBounds(450, 525, levelButtonWidth, levelButtonHeight);
+        level2Button.setContentAreaFilled(false);
+        level2Button.setBorderPainted(false);
+        level2Button.setFocusPainted(false); // Prevent blue focus outline
         level2Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new GameEngine(2).setVisible(true); // เริ่มเกมที่เลเวล 2
-                dispose(); // ปิดหน้าจอเลือกเลเวล
+                new GameEngine(2).setVisible(true); // Start game at level 2
+                dispose(); // Close level selection screen
             }
         });
 
-        // ปุ่ม Back ในมุมขวาบน
-        JButton backButton = new JButton("Back");
-        backButton.setFont(new Font("Arial", Font.PLAIN, 18));
-        backButton.setBounds(1100, 20, 80, 40); // กำหนดตำแหน่งและขนาดปุ่ม
+        // Back button on the right within bounds
+        JButton backButton = new JButton(backIcon);
+        backButton.setBounds(1020, 20, backButtonWidth, backButtonHeight); // Positioned closer to the right edge
+        backButton.setContentAreaFilled(false);
+        backButton.setBorderPainted(false);
+        backButton.setFocusPainted(false); // Prevent blue focus outline
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new MainMenu().setVisible(true); // กลับไปยังหน้าหลัก
+                new MainMenu().setVisible(true); // Go back to main menu
                 dispose();
             }
         });
 
-        // เพิ่มปุ่มในหน้าต่าง
-        add(level1Button);
-        add(level2Button);
-        add(backButton);
+        // Add buttons to the background panel
+        backgroundPanel.add(level1Button);
+        backgroundPanel.add(level2Button);
+        backgroundPanel.add(backButton);
+
+        // Add background panel to the frame
+        setContentPane(backgroundPanel);
     }
 
     public static void main(String[] args) {
