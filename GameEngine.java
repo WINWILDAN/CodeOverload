@@ -16,6 +16,7 @@ public class GameEngine extends JFrame {
     private int timeRemaining;
     private Timer gameTimer;
     private Map map;
+    private int damagePerHit = 10; // จำนวนพลังชีวิตที่ลดเมื่อผู้เล่นชนกับซอมบี้
 
     public GameEngine(int level) {
         setTitle("Code Overload: Rise of the Undead - Level " + level);
@@ -152,21 +153,32 @@ public class GameEngine extends JFrame {
     private void checkCollision() {
         if (isGameOver || isVictory) return;
     
+        // ตรวจสอบการชนของกระสุนกับซอมบี้
         Iterator<Bullet> bulletIterator = bullets.iterator();
         while (bulletIterator.hasNext()) {
             Bullet bullet = bulletIterator.next();
             Iterator<Zombie> zombieIterator = zombies.iterator();
             while (zombieIterator.hasNext()) {
                 Zombie zombie = zombieIterator.next();
-                // ตรวจสอบการชนของกระสุนกับซอมบี้
                 if (Math.abs(bullet.getX() - zombie.getX()) < 20 && Math.abs(bullet.getY() - zombie.getY()) < 20) {
-                    zombie.takeDamage(10); // ลดเลือดของซอมบี้
-                    bulletIterator.remove(); // ลบกระสุนเมื่อชน
+                    zombie.takeDamage(10);
+                    bulletIterator.remove();
                     if (zombie.isDead()) {
-                        zombieIterator.remove(); // ลบซอมบี้เมื่อถูกฆ่า
+                        zombieIterator.remove();
                         score += 10;
                     }
-                    break; // ออกจากลูปเมื่อพบการชน เพื่อไม่ให้มีการตรวจซ้ำ
+                    break;
+                }
+            }
+        }
+    
+        // ตรวจสอบการชนของผู้เล่นกับซอมบี้
+        for (Zombie zombie : zombies) {
+            if (Math.abs(player.getX() - zombie.getX()) < 20 && Math.abs(player.getY() - zombie.getY()) < 20) {
+                health -= damagePerHit; // ลดเลือดของผู้เล่น
+                if (health <= 0) {
+                    isGameOver = true;
+                    showEndGameScreen(false); // แสดงหน้าจอ Game Over เมื่อสุขภาพหมด
                 }
             }
         }

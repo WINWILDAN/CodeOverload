@@ -12,9 +12,9 @@ public class Map {
         brickImage = brickIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH); // ปรับขนาดอิฐให้เล็กลง
 
         if (level == 1) {
-            createLevel1Map();  // ใช้แมพง่ายสำหรับเลเวล 1
+            createLevel1Map();  
         } else if (level == 2) {
-            createLevel2Map();  // ใช้แมพที่ซับซ้อนสำหรับเลเวล 2
+            createLevel2Map();  
         }
     }
 
