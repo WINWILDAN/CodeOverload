@@ -11,6 +11,7 @@ public class GameEngine extends JFrame {
     private int score = 0;
     private int level;
     private ArrayList<Zombie> zombies;
+    private Image zombieImage;
     private int health = 100;
     private int damagePerHit = 5;
     private boolean isGameOver = false;
@@ -25,32 +26,49 @@ public class GameEngine extends JFrame {
         this.level = level;
 
         map = new Map();
-
+        zombieImage = new ImageIcon("zombie.png").getImage();
         zombies = new ArrayList<>();
         spawnZombies();
 
-        player = new Player(100, 100);
+        // กำหนดตำแหน่งผู้เล่นให้อยู่มุมขวาล่าง และตรวจสอบให้ไม่ชนกำแพง
+        int playerStartX = getWidth() - 40;
+        int playerStartY = getHeight() - 40;
+        while (checkCollisionWithWalls(playerStartX, playerStartY)) {
+            playerStartX -= 20;
+            playerStartY -= 20;
+        }
+
+        // โหลดภาพเฟรมสำหรับผู้เล่น
+        Image[] walkingFrames = {
+            new ImageIcon("walk1.png").getImage().getScaledInstance(32, 40, Image.SCALE_SMOOTH),
+            new ImageIcon("walk2.png").getImage().getScaledInstance(32, 40, Image.SCALE_SMOOTH),
+            new ImageIcon("walk3.png").getImage().getScaledInstance(32, 40, Image.SCALE_SMOOTH),
+            new ImageIcon("walk4.png").getImage().getScaledInstance(32, 40, Image.SCALE_SMOOTH)
+        };
+
+        player = new Player(100, 120, walkingFrames);
         bullets = new ArrayList<>();
         mousePosition = new Point(0, 0);
 
         GamePanel gamePanel = new GamePanel();
         add(gamePanel);
 
+        // ภายใน GameEngine
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 int dx = 0, dy = 0;
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_W -> dy = -10;
-                    case KeyEvent.VK_S -> dy = 10;
-                    case KeyEvent.VK_A -> dx = -10;
-                    case KeyEvent.VK_D -> dx = 10;
+                    case KeyEvent.VK_W -> dy = -1;
+                    case KeyEvent.VK_S -> dy = 1;
+                    case KeyEvent.VK_A -> dx = -1;
+                    case KeyEvent.VK_D -> dx = 1;
                 }
-
-                if (!checkCollisionWithWalls(player.getX() + dx, player.getY() + dy)) {
-                    player.move(dx, dy);  // ย้ายผู้เล่นถ้าไม่มีการชนกับกำแพง
+                
+                if (!checkCollisionWithWalls(player.getX() + dx * player.getSpeed(), player.getY() + dy * player.getSpeed())) {
+                    player.move(dx, dy); // เคลื่อนที่ผู้เล่นเมื่อไม่ชนกำแพง
+                    repaint();
                 }
-                repaint();
             }
         });
 
@@ -106,18 +124,35 @@ public class GameEngine extends JFrame {
         double zombieSpeed = (level == 1) ? 0.5 : 1.0;
 
         for (int i = 0; i < numberOfZombies; i++) {
-            zombies.add(new Zombie((int) (Math.random() * getWidth()), (int) (Math.random() * getHeight()), zombieHealth, zombieSpeed));
+            int zombieX, zombieY;
+            do {
+                zombieX = (int) (Math.random() * (getWidth() - 40));
+                zombieY = (int) (Math.random() * (getHeight() - 40));
+            } while (checkCollisionWithWalls(zombieX, zombieY));
+
+            // Pass zombieImage when creating a new Zombie instance
+            zombies.add(new Zombie(zombieX, zombieY, zombieHealth, zombieSpeed, zombieImage));
         }
     }
 
     private void shootBullet(Point target) {
-        int dx = target.x - player.getX();
-        int dy = target.y - player.getY();
+        // ขนาดภาพผู้เล่น
+        int playerWidth = 32; // หรือกำหนดให้ตรงกับขนาดของภาพ
+        int playerHeight = 40; // หรือกำหนดให้ตรงกับขนาดของภาพ
+    
+        // คำนวณจุดศูนย์กลางของผู้เล่น
+        int playerCenterX = player.getX() + playerWidth / 2;
+        int playerCenterY = player.getY() + playerHeight / 2;
+    
+        // คำนวณทิศทางของกระสุน
+        int dx = target.x - playerCenterX;
+        int dy = target.y - playerCenterY;
         double length = Math.sqrt(dx * dx + dy * dy);
-        dx = (int) (dx / length * 5);
+        dx = (int) (dx / length * 5); // ปรับความเร็ว
         dy = (int) (dy / length * 5);
-
-        Bullet bullet = new Bullet(player.getX(), player.getY(), dx, dy);
+    
+        // สร้างกระสุนที่จุดศูนย์กลางของผู้เล่น
+        Bullet bullet = new Bullet(playerCenterX, playerCenterY, dx, dy);
         bullets.add(bullet);
     }
 
@@ -126,7 +161,25 @@ public class GameEngine extends JFrame {
         while (it.hasNext()) {
             Bullet bullet = it.next();
             bullet.move();
+            
+            // ตรวจสอบว่ากระสุนชนกับขอบหน้าต่าง
             if (bullet.getX() < 0 || bullet.getX() > getWidth() || bullet.getY() < 0 || bullet.getY() > getHeight()) {
+                it.remove();
+                continue;
+            }
+    
+            // ตรวจสอบว่ากระสุนชนกับกำแพงหรือไม่
+            Rectangle bulletBounds = new Rectangle(bullet.getX(), bullet.getY(), 5, 5); // กำหนดขนาดของกระสุน
+            boolean hitWall = false;
+            for (Rectangle wall : map.getWalls()) {
+                if (bulletBounds.intersects(wall)) {
+                    hitWall = true;
+                    break;
+                }
+            }
+    
+            // ลบกระสุนออกจากลิสต์ถ้าชนกับกำแพง
+            if (hitWall) {
                 it.remove();
             }
         }
@@ -202,11 +255,14 @@ public class GameEngine extends JFrame {
             super.paintComponent(g);
             player.draw(g);
 
-            // วาดผนังและสิ่งกีดขวางจากแมพ
-            g.setColor(Color.DARK_GRAY);
-            for (Rectangle wall : map.getWalls()) {
-                g.fillRect(wall.x, wall.y, wall.width, wall.height);
-            }
+            // วาดพื้นหลังเป็นสีเทาอ่อน
+        g.setColor(Color.LIGHT_GRAY);
+        g.fillRect(0, 0, getWidth(), getHeight());
+
+        // วาดกำแพงในแมพ
+        map.draw(g);
+        // วาดผู้เล่น
+        player.draw(g);
 
             for (Zombie zombie : zombies) {
                 zombie.draw(g);

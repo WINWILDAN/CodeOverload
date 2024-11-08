@@ -3,13 +3,16 @@ public class Zombie {
     private double x, y; // ตำแหน่งของซอมบี้
     private int health; // พลังชีวิตซอมบี้
     private double speed; // ความเร็วของซอมบี้
+    private Image zombieImage;
 
-    public Zombie(int x, int y, int health, double speed) {
+    public Zombie(int x, int y, int health, double speed, Image zombieImage) {
         this.x = x;
         this.y = y;
         this.health = health;
         this.speed = speed;
+        this.zombieImage = zombieImage;
     }
+
 
     public void moveTowards(Player player) {
         // คำนวณระยะห่างและทิศทางไปยังผู้เล่น
@@ -25,8 +28,13 @@ public class Zombie {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.RED);
-        g.fillRect((int) x, (int) y, 20, 20);
+        // Draw the zombie image at the current position
+        if (zombieImage != null) {
+            g.drawImage(zombieImage, (int)x, (int)y, 36, 40, null);
+        } else {
+            g.setColor(Color.GREEN);
+            g.fillRect((int)x, (int)y, 32, 32); // ใช้สี่เหลี่ยมสีเขียวหากภาพไม่โหลด
+        }
     }
 
     public void takeDamage(int damage) {
