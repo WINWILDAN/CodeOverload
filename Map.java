@@ -9,7 +9,7 @@ public class Map {
     public Map(int level) {
         walls = new ArrayList<>();
         ImageIcon brickIcon = new ImageIcon("brick.jpg"); 
-        brickImage = brickIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+        brickImage = brickIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH); // ปรับขนาดอิฐให้เล็กลง
 
         if (level == 1) {
             createLevel1Map();  // ใช้แมพง่ายสำหรับเลเวล 1
@@ -19,34 +19,34 @@ public class Map {
     }
 
     private void createLevel1Map() {
-        // แมพสำหรับเลเวล 1 (เหมือนโค้ดเดิมของคุณ)
-        walls.add(new Rectangle(0, 0, 1200, 40));      // ขอบบน
-        walls.add(new Rectangle(0, 0, 40, 1200));      // ขอบซ้าย
-        walls.add(new Rectangle(1160, 0, 40, 1200));   // ขอบขวา
-        walls.add(new Rectangle(0, 1160, 1200, 40));   // ขอบล่าง
+        // แมพสำหรับเลเวล 1 ที่ปรับให้เป็น 600x600
+        walls.add(new Rectangle(0, 0, 600, 20));      // ขอบบน
+        walls.add(new Rectangle(0, 0, 20, 600));      // ขอบซ้าย
+        walls.add(new Rectangle(580, 0, 20, 600));   // ขอบขวา
+        walls.add(new Rectangle(0, 580, 600, 20));   // ขอบล่าง
 
-        // กำแพงภายใน
-        walls.add(new Rectangle(80, 80, 200, 40));
-        walls.add(new Rectangle(80, 160, 40, 240));
-        walls.add(new Rectangle(200, 160, 200, 40));
-        walls.add(new Rectangle(320, 240, 40, 200));
-        walls.add(new Rectangle(80, 480, 200, 40));
-        walls.add(new Rectangle(80, 560, 40, 320));
-        walls.add(new Rectangle(200, 640, 240, 40));
-        walls.add(new Rectangle(320, 720, 40, 240));
-        walls.add(new Rectangle(560, 80, 40, 880));
-        walls.add(new Rectangle(400, 480, 400, 40));
-        walls.add(new Rectangle(800, 80, 40, 800));
-        walls.add(new Rectangle(880, 480, 240, 40));
-        walls.add(new Rectangle(680, 880, 400, 40));
-        walls.add(new Rectangle(400, 1040, 400, 40));
+        // กำแพงภายใน ปรับให้เล็กลงเพื่อให้พอดีกับขนาดใหม่
+        walls.add(new Rectangle(40, 40, 100, 20));
+        walls.add(new Rectangle(40, 80, 20, 120));
+        walls.add(new Rectangle(100, 80, 100, 20));
+        walls.add(new Rectangle(160, 120, 20, 100));
+        walls.add(new Rectangle(40, 240, 100, 20));
+        walls.add(new Rectangle(40, 280, 20, 160));
+        walls.add(new Rectangle(100, 320, 120, 20));
+        walls.add(new Rectangle(160, 360, 20, 120));
+        walls.add(new Rectangle(280, 40, 20, 440));
+        walls.add(new Rectangle(200, 240, 200, 20));
+        walls.add(new Rectangle(400, 40, 20, 400));
+        walls.add(new Rectangle(440, 240, 120, 20));
+        walls.add(new Rectangle(340, 440, 200, 20));
+        walls.add(new Rectangle(200, 520, 200, 20));
     }
 
     private void createLevel2Map() {
-        // แมพสำหรับเลเวล 2 ที่ซับซ้อนและท้าทาย
-        int gridSize = 40;  // ขนาดช่องกำแพง
-        int width = 1200;
-        int height = 1200;
+        // แมพสำหรับเลเวล 2 ที่ซับซ้อนและขนาด 600x600
+        int gridSize = 20;  // ปรับขนาดช่องกำแพง
+        int width = 600;
+        int height = 600;
 
         // สร้างขอบรอบแมพ
         walls.add(new Rectangle(0, 0, width, gridSize));
@@ -64,20 +64,20 @@ public class Map {
         }
 
         // สร้างเส้นทางเดินซับซ้อนเพิ่มเติม
-        walls.add(new Rectangle(3 * gridSize, 3 * gridSize, gridSize * 6, gridSize)); // แนวนอนบน
-        walls.add(new Rectangle(7 * gridSize, 6 * gridSize, gridSize, gridSize * 5)); // แนวตั้งซ้าย
-        walls.add(new Rectangle(10 * gridSize, 9 * gridSize, gridSize * 4, gridSize)); // แนวนอนกลาง
-        walls.add(new Rectangle(6 * gridSize, 13 * gridSize, gridSize * 3, gridSize)); // แนวนอนล่าง
+        walls.add(new Rectangle(3 * gridSize, 3 * gridSize, gridSize * 3, gridSize)); // แนวนอนบน
+        walls.add(new Rectangle(4 * gridSize, 3 * gridSize, gridSize, gridSize * 3)); // แนวตั้งซ้าย
+        walls.add(new Rectangle(5 * gridSize, 5 * gridSize, gridSize * 2, gridSize)); // แนวนอนกลาง
+        walls.add(new Rectangle(3 * gridSize, 8 * gridSize, gridSize * 2, gridSize)); // แนวนอนล่าง
 
         // ทางเดินกลางแมพ
-        for (int i = 5; i < height / gridSize - 5; i++) {
+        for (int i = 3; i < height / gridSize - 3; i++) {
             if (i % 2 == 1) {
-                walls.add(new Rectangle(5 * gridSize, i * gridSize, gridSize, gridSize));
+                walls.add(new Rectangle(2 * gridSize, i * gridSize, gridSize, gridSize));
             }
         }
-        for (int i = 6; i < width / gridSize - 6; i++) {
+        for (int i = 3; i < width / gridSize - 3; i++) {
             if (i % 3 == 0) {
-                walls.add(new Rectangle(i * gridSize, 10 * gridSize, gridSize, gridSize));
+                walls.add(new Rectangle(i * gridSize, 5 * gridSize, gridSize, gridSize));
             }
         }
     }
@@ -88,12 +88,12 @@ public class Map {
 
     public void draw(Graphics g) {
         g.setColor(Color.LIGHT_GRAY);
-        g.fillRect(0, 0, 1200, 1200);
+        g.fillRect(0, 0, 600, 600); // ปรับพื้นหลังให้มีขนาด 600x600
 
         // วาดกำแพงด้วยอิฐ
         for (Rectangle wall : walls) {
-            for (int x = wall.x; x < wall.x + wall.width; x += 40) {
-                for (int y = wall.y; y < wall.y + wall.height; y += 40) {
+            for (int x = wall.x; x < wall.x + wall.width; x += 20) {
+                for (int y = wall.y; y < wall.y + wall.height; y += 20) {
                     g.drawImage(brickImage, x, y, null);
                 }
             }

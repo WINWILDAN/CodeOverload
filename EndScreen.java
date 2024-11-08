@@ -5,27 +5,27 @@ import javax.swing.*;
 public class EndScreen extends JFrame {
     public EndScreen(boolean isVictory, int level, int score) {
         setTitle(isVictory ? "Victory" : "Game Over");
-        setSize(1200, 1200); // กำหนดขนาดหน้าต่างเป็น 1200x1200
+        setSize(600, 600); // กำหนดขนาดหน้าต่างเป็น 600x600
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // ทำให้หน้าต่างอยู่กึ่งกลางจอ
         getContentPane().setBackground(Color.BLACK);
         setLayout(new GridBagLayout());
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(20, 0, 20, 0);
+        gbc.insets = new Insets(10, 0, 10, 0); // ลดระยะห่างให้น้อยลง
         gbc.gridx = 0;
         gbc.gridy = 0;
 
         // Title Label
         JLabel titleLabel = new JLabel(isVictory ? "You WIN" : "Game Over");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 72));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 48)); // ลดขนาดฟอนต์ให้เหมาะสมกับขนาดหน้าต่าง
         titleLabel.setForeground(Color.WHITE);
         add(titleLabel, gbc);
 
         // Score Label
         gbc.gridy++;
         JLabel scoreLabel = new JLabel("Score: " + score);
-        scoreLabel.setFont(new Font("Arial", Font.PLAIN, 36));
+        scoreLabel.setFont(new Font("Arial", Font.PLAIN, 24)); // ลดขนาดฟอนต์ให้เหมาะสม
         scoreLabel.setForeground(Color.WHITE);
         add(scoreLabel, gbc);
 
@@ -40,7 +40,7 @@ public class EndScreen extends JFrame {
 
             gbc.gridy++;
             JLabel orLabel = new JLabel("or");
-            orLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+            orLabel.setFont(new Font("Arial", Font.PLAIN, 18)); // ลดขนาดฟอนต์
             orLabel.setForeground(Color.WHITE);
             add(orLabel, gbc);
 
@@ -57,7 +57,7 @@ public class EndScreen extends JFrame {
         if (!isVictory || level == 2) {
             gbc.gridy++;
             JLabel orLabel = new JLabel("or");
-            orLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+            orLabel.setFont(new Font("Arial", Font.PLAIN, 18)); // ลดขนาดฟอนต์
             orLabel.setForeground(Color.WHITE);
             add(orLabel, gbc);
 
@@ -74,8 +74,8 @@ public class EndScreen extends JFrame {
 
     private JButton createButton(String text, ActionListener action) {
         JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(300, 60));
-        button.setFont(new Font("Arial", Font.PLAIN, 24));
+        button.setPreferredSize(new Dimension(200, 40)); // ลดขนาดปุ่มให้เหมาะสม
+        button.setFont(new Font("Arial", Font.PLAIN, 18)); // ลดขนาดฟอนต์ให้เหมาะสม
         button.setFocusPainted(false); // ลบเส้นกรอบสีน้ำเงิน
         button.addActionListener(action);
         return button;

@@ -8,29 +8,28 @@ public class LevelSelectionMenu extends JFrame {
 
     public LevelSelectionMenu() {
         setTitle("Select Level");
-        setSize(1200, 1200); // Set window size to 1200x1200
+        setSize(600, 600); // Set window size to 600x600
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        
-        // Load the background image
-        backgroundImage = new ImageIcon("selecBG.png").getImage();
 
-        // Create the custom panel with background image
+        // Load and resize the background image
+        backgroundImage = new ImageIcon("selecBG.png").getImage().getScaledInstance(600, 600, Image.SCALE_SMOOTH);
+
+        // Create the custom panel with the resized background image
         JPanel backgroundPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                // Draw the background image to fill the panel
                 g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
             }
         };
         backgroundPanel.setLayout(null); // Set layout to null for custom positioning
 
-        // Desired button sizes
-        int levelButtonWidth = 300; // Reduced from 400 by 25%
-        int levelButtonHeight = 120; // Reduced from 160 by 25%
-        int backButtonWidth = 150; // Original width (100) increased by 50%
-        int backButtonHeight = 60; // Original height (40) increased by 50%
+        // Adjusted button sizes and positions for 600x600 layout
+        int levelButtonWidth = 150; // Adjusted width
+        int levelButtonHeight = 60;  // Adjusted height
+        int backButtonWidth = 80;    // Adjusted width for back button
+        int backButtonHeight = 30;   // Adjusted height for back button
 
         // Load and resize button images
         ImageIcon level1Icon = new ImageIcon(new ImageIcon("level1.png").getImage().getScaledInstance(levelButtonWidth, levelButtonHeight, Image.SCALE_SMOOTH));
@@ -39,7 +38,7 @@ public class LevelSelectionMenu extends JFrame {
 
         // Button for Level 1
         JButton level1Button = new JButton(level1Icon);
-        level1Button.setBounds(450, 375, levelButtonWidth, levelButtonHeight);
+        level1Button.setBounds(225, 180, levelButtonWidth, levelButtonHeight); // Positioned for smaller screen
         level1Button.setContentAreaFilled(false);
         level1Button.setBorderPainted(false);
         level1Button.setFocusPainted(false); // Prevent blue focus outline
@@ -53,7 +52,7 @@ public class LevelSelectionMenu extends JFrame {
 
         // Button for Level 2
         JButton level2Button = new JButton(level2Icon);
-        level2Button.setBounds(450, 525, levelButtonWidth, levelButtonHeight);
+        level2Button.setBounds(225, 270, levelButtonWidth, levelButtonHeight); // Positioned for smaller screen
         level2Button.setContentAreaFilled(false);
         level2Button.setBorderPainted(false);
         level2Button.setFocusPainted(false); // Prevent blue focus outline
@@ -65,9 +64,9 @@ public class LevelSelectionMenu extends JFrame {
             }
         });
 
-        // Back button on the right within bounds
+        // Back button positioned in the top right
         JButton backButton = new JButton(backIcon);
-        backButton.setBounds(1020, 20, backButtonWidth, backButtonHeight); // Positioned closer to the right edge
+        backButton.setBounds(500, 20, backButtonWidth, backButtonHeight); // Positioned for smaller screen
         backButton.setContentAreaFilled(false);
         backButton.setBorderPainted(false);
         backButton.setFocusPainted(false); // Prevent blue focus outline
